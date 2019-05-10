@@ -1,0 +1,7 @@
+body div {
+  border: 2px solid #000;
+  /* transform: rotate(45deg); */
+  background: url('./ABB.png') no-repeat center right;
+  width: 300px;
+  height: 200px;
+}
