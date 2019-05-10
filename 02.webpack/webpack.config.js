@@ -34,7 +34,8 @@ module.exports = {
   entry: './src/index.js',
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'build')
+    path: path.resolve(__dirname, 'build'),
+    publicPath: 'http://www.baidu.com'
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -48,7 +49,7 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       // 抽离出的样式的名字
-      filename: 'main.css'
+      filename: 'css/main.css'
     }),
     // new Webpack.ProvidePlugin({
     //   '$': 'jquery' // 在每个模块中都注入$
@@ -70,7 +71,8 @@ module.exports = {
         use: {
           loader: 'url-loader',
           options: {
-            limit: 200*1024
+            limit: 1,
+            outputPath: '/img/'
           }
         }
       },
