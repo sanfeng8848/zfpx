@@ -1,26 +1,17 @@
 let path = require('path')
 let HtmlWebpackPlugin = require('html-webpack-plugin')
 let cleanWebpackPlugin = require('clean-webpack-plugin')
-let copyWebpackPlugin = require('copy-webpack-plugin')
-let webpack = require('webpack')
-
+let webpack = require('webpack')  // webpack自带插件功能 比如banner 定义环境变量等
 module.exports = {
-  mode: 'production',
-  // 多入口
   entry: {
     index: './src/common/index.js'
   },
-  // 多出口 '[name].js'  name就是变量
-  output: { 
-    filename: '[name].js',
+  output: {
+    filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist')
   },
   module: {
     rules: [
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
-      },
       {
         test: /\.js$/,
         use: {
@@ -29,6 +20,10 @@ module.exports = {
             presets: ['@babel/preset-env']
           }
         }
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
       }
     ]
   },
@@ -48,18 +43,11 @@ module.exports = {
       filename: 'index.html'
     }),
     new webpack.DefinePlugin({
-      // DEV: "'dev'"   // 双引号里包裹着单引号, 实际的js文件中DEV环境变量就是'dev'这个字符串
       DEV: JSON.stringify('production'),
-      FLAG: 'true',     // 会将true这个boolean值插入到js文件中
-      EXPRESSION: '1+1'
+      FLAG: 'true',
+      EXPRESSION: '1+2'
     }),
     new cleanWebpackPlugin(),
-    // new copyWebpackPlugin([
-    //   // 把doc目录下的所有文件copy到输出目录下(dist),如果需要加特定目录,直接 { to: './doc' }
-    //   { from: './doc', to: './' },
-    //   // ...可以写多个 
-    //   // { from: './data', to: './data'}
-    // ]),
-    new webpack.BannerPlugin('make by CNIAB 2019')
+    new webpack.BannerPlugin('This is for CNIAB@2019')
   ]
 }
