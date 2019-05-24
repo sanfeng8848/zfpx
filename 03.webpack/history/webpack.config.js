@@ -1,21 +1,18 @@
 let path = require('path')
 let HtmlWebpackPlugin = require('html-webpack-plugin')
-let cleanWebpackPlugin = require('clean-webpack-plugin')
 let webpack = require('webpack')
+let Happypack = require('happypack')
 
 module.exports = {
-  mode: 'production',
+  mode: 'development',
   devServer: {
-    hot: true,
     port: 3000,
     open: true,     // 服务启动自动代开
     contentBase: './dist' // 访问的是打包后的结果目录 
   },
-  entry: {
-    index: './src/index.js'
-  },
+  entry: './src/index.js',
   output: {
-    filename: '[name].js',
+    filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist')
   },
   module: {
@@ -25,22 +22,11 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         include: path.resolve('src'),
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              '@babel/preset-env',
-              '@babel/preset-react'
-            ],
-            plugins: [
-              '@babel/plugin-syntax-dynamic-import'
-            ]
-          }
-        }
+        use: 'happypack/loader?id=js'
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader']
+        use: 'happypack/loader?id=css'
       } 
     ]
   },
@@ -51,8 +37,24 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './public/index.html'
     }),
-    new cleanWebpackPlugin(),
-    new webpack.HotModuleReplacementPlugin(),   // 热更新插件
-    new webpack.NamedModulesPlugin()    // 打印更新的模块路径
+    new webpack.DllReferencePlugin({
+      manifest: path.resolve(__dirname, 'dist', 'manifest.json') 
+    }),
+    new Happypack({
+      id: 'js',
+      use: [{
+        loader: 'babel-loader',
+        options: {
+          presets: [
+            '@babel/preset-env',
+            '@babel/preset-react'
+          ]
+        }
+      }]
+    }),
+    new Happypack({
+      id: 'css',
+      use: ['style-loader', 'css-loader']
+    })
   ]
 }

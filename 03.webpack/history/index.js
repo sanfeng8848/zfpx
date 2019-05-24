@@ -1,8 +1,17 @@
 import React from 'react'
 import { render } from 'react-dom'
 
-render(<h1>jsx</h1>, window.root)
+render(<h1>jsx111</h1>, window.root)
 
+import calc from './test'
+console.log(calc.sum(1, 2))
+
+// scope hosting 作用域提升
+let a = 1;
+let b = 2;
+let c = 3;
+let d = a + b +c;
+console.log(d, '----------------')
 
 
 // import jquery from 'jquery'

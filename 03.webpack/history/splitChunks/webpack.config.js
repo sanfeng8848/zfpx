@@ -4,15 +4,46 @@ let cleanWebpackPlugin = require('clean-webpack-plugin')
 let webpack = require('webpack')
 
 module.exports = {
+  // mode: 'development',
+  optimization: {
+    splitChunks: {    // 分隔代码块
+      // miniSize: 0,
+      // minChunks: 2,
+      // cacheGroups: {    // 缓存组
+      //   default: {     // 公共的模块
+      //     chunks: 'initial',
+          
+      //   },
+      //   vendors: {
+      //     priority: 1,
+      //     test: /node_modules/,   // 匹配的都抽离出来
+      //     chunks: 'initial',
+      //     miniSize: 0,
+      //     minChunks: 2
+      //   }
+      // }
+      cacheGroups: {
+        // vendors: {
+        //   test: /[\\/]node_modules[\\/]/,
+        //   priority: -10
+        // },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true
+        }
+      }
+    }
+  },
   mode: 'production',
   devServer: {
-    hot: true,
     port: 3000,
     open: true,     // 服务启动自动代开
     contentBase: './dist' // 访问的是打包后的结果目录 
   },
   entry: {
-    index: './src/index.js'
+    index: './src/index.js',
+    other: './src/other.js'
   },
   output: {
     filename: '[name].js',
@@ -31,9 +62,6 @@ module.exports = {
             presets: [
               '@babel/preset-env',
               '@babel/preset-react'
-            ],
-            plugins: [
-              '@babel/plugin-syntax-dynamic-import'
             ]
           }
         }
@@ -51,8 +79,9 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './public/index.html'
     }),
-    new cleanWebpackPlugin(),
-    new webpack.HotModuleReplacementPlugin(),   // 热更新插件
-    new webpack.NamedModulesPlugin()    // 打印更新的模块路径
+    new cleanWebpackPlugin()
+    // new webpack.DllReferencePlugin({
+    //   manifest: path.resolve(__dirname, 'dist', 'manifest.json') 
+    // })
   ]
 }
